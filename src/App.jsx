@@ -84,7 +84,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col max-w-lg mx-auto relative">
+    <div className="min-h-screen bg-gray-50 flex flex-col max-w-full mx-auto relative">
 
       {/* Top bar */}
       <header className="bg-white border-b border-gray-100 px-4 py-3 safe-top flex items-center justify-between sticky top-0 z-40">
