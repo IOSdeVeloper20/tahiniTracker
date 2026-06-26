@@ -26,24 +26,25 @@ function ExpenseForm({ prefill, onSubmit, onClose, lang }) {
         <Field label={t.date}><input className="form-input" type="date" value={f.date} onChange={set("date")} /></Field>
       </FieldRow>
       <Field label={t.notes}><input className="form-input" value={f.notes} onChange={set("notes")} placeholder={t.optional} /></Field>
-      <button className="btn-primary mt-2" onClick={() => onSubmit({ ...f, id: prefill.id })}>{t.save}</button>
+      <button className="btn-primary mt-2" onClick={() => onSubmit({ ...f, id: prefill.id })}>
+        <i className="ti ti-device-floppy me-1.5" aria-hidden="true" /> {t.save}
+      </button>
     </div>
   );
 }
 
 export default function ExpensesScreen({ data, onSave, onDelete, showToast, lang }) {
   const t = tr[lang];
-  const [form, setForm] = useState(null);
+  const [form,    setForm]    = useState(null);
   const [confirm, setConfirm] = useState(null);
   const month = thisMonth();
 
   const monthExpenses = data.expenses.filter(e => e.date.startsWith(month));
-  const monthTotal = monthExpenses.reduce((s, e) => s + Number(e.amount), 0);
+  const monthTotal    = monthExpenses.reduce((s, e) => s + Number(e.amount), 0);
 
-  // Top category this month
   const catTotals = {};
   monthExpenses.forEach(e => { catTotals[e.category] = (catTotals[e.category] || 0) + Number(e.amount); });
-  const topCat = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
+  const topCat      = Object.entries(catTotals).sort((a, b) => b[1] - a[1])[0];
   const topCatLabel = topCat ? EXPENSE_CATS.find(c => c.key === topCat[0])?.[lang] || topCat[0] : "—";
 
   const submitExpense = fields => {
@@ -58,16 +59,16 @@ export default function ExpensesScreen({ data, onSave, onDelete, showToast, lang
   return (
     <div className="p-4">
       <button className="add-btn" onClick={() => setForm({})}>
-        <i className="ti ti-plus text-base" aria-hidden="true" /> {t.logExpense}
+        <i className="ti ti-circle-plus text-base" aria-hidden="true" /> {t.logExpense}
       </button>
 
       <div className="grid grid-cols-2 gap-2.5 mb-3">
-        <MetricCard label={t.thisMonth} value={fmtEGP(monthTotal)} color="text-amber-700" />
+        <MetricCard label={t.thisMonth} value={fmtEGP(monthTotal)} color="text-amber-700 dark:text-amber-400" />
         <div className="metric-card">
-          <p className="text-xs text-gray-500 mb-1">{t.largestItem}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t.largestItem}</p>
           {topCat
-            ? <><p className="text-sm font-semibold text-gray-900">{topCatLabel}</p><p className="text-xs text-gray-400">{fmtEGP(topCat[1])}</p></>
-            : <p className="text-sm text-gray-400">—</p>}
+            ? <><p className="text-sm font-semibold text-gray-900 dark:text-white">{topCatLabel}</p><p className="text-xs text-gray-400 dark:text-gray-500">{fmtEGP(topCat[1])}</p></>
+            : <p className="text-sm text-gray-400 dark:text-gray-500">—</p>}
         </div>
       </div>
 
@@ -79,15 +80,19 @@ export default function ExpensesScreen({ data, onSave, onDelete, showToast, lang
           <div key={e.id} className="card">
             <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-medium text-gray-900">{catLabel}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{e.date}{e.notes ? ` · ${e.notes}` : ""}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{catLabel}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{e.date}{e.notes ? ` · ${e.notes}` : ""}</p>
               </div>
               <div className="text-end flex flex-col items-end gap-1.5">
-                <p className="text-sm font-semibold text-gray-900">{fmtEGP(e.amount)}</p>
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">{fmtEGP(e.amount)}</p>
                 <Badge label={catLabel} cls={CAT_CLS[e.category]} />
                 <div className="flex gap-3">
-                  <button onClick={() => setForm(e)} className="text-xs text-gray-400 hover:text-gray-600">{t.edit}</button>
-                  <button onClick={() => setConfirm(e.id)} className="text-xs text-red-400 hover:text-red-600">{t.delete}</button>
+                  <button onClick={() => setForm(e)} className="text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 flex items-center gap-1">
+                    <i className="ti ti-pencil text-xs" aria-hidden="true" /> {t.edit}
+                  </button>
+                  <button onClick={() => setConfirm(e.id)} className="text-xs text-red-400 hover:text-red-600 flex items-center gap-1">
+                    <i className="ti ti-trash text-xs" aria-hidden="true" /> {t.delete}
+                  </button>
                 </div>
               </div>
             </div>

@@ -17,29 +17,29 @@ export function fmtEGP(n) { return `${Number(n || 0).toLocaleString()} EGP`; }
 
 // ── Badge colour maps ─────────────────────────────────────────────────────────
 export const STATUS_CLS = {
-  pending:    "bg-gray-100 text-gray-600",
-  confirmed:  "bg-blue-50 text-blue-700",
-  packaged:   "bg-amber-50 text-amber-700",
-  inDelivery: "bg-green-50 text-green-700",
-  delivered:  "bg-emerald-50 text-emerald-700",
-  cancelled:  "bg-red-50 text-red-600",
+  pending:    "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300",
+  confirmed:  "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
+  packaged:   "bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
+  inDelivery: "bg-green-50 dark:bg-green-900/40 text-green-700 dark:text-green-300",
+  delivered:  "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300",
+  cancelled:  "bg-red-50 dark:bg-red-900/40 text-red-600 dark:text-red-400",
 };
 export const PAYMENT_CLS = {
-  paid:   "bg-emerald-50 text-emerald-700",
-  unpaid: "bg-red-50 text-red-600",
+  paid:   "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300",
+  unpaid: "bg-red-50 dark:bg-red-900/40 text-red-600 dark:text-red-400",
 };
 export const CAT_CLS = {
-  productCost: "bg-blue-50 text-blue-700",
-  packaging:   "bg-green-50 text-green-700",
-  advertising: "bg-amber-50 text-amber-700",
-  delivery:    "bg-orange-50 text-orange-700",
-  other:       "bg-gray-100 text-gray-600",
+  productCost: "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300",
+  packaging:   "bg-green-50 dark:bg-green-900/40 text-green-700 dark:text-green-300",
+  advertising: "bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300",
+  delivery:    "bg-orange-50 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300",
+  other:       "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300",
 };
 
 // ── Small components ──────────────────────────────────────────────────────────
 export function Badge({ label, cls }) {
   return (
-    <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${cls || "bg-gray-100 text-gray-600"}`}>
+    <span className={`inline-block text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap ${cls || "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}>
       {label}
     </span>
   );
@@ -57,7 +57,7 @@ export function Toast({ msg, onDone }) {
 export function OfflineBanner({ online, text }) {
   if (online) return null;
   return (
-    <div className="bg-amber-50 text-amber-700 text-xs text-center px-3 py-1.5 border-b border-amber-200 flex items-center justify-center gap-1.5">
+    <div className="bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-xs text-center px-3 py-1.5 border-b border-amber-200 dark:border-amber-800 flex items-center justify-center gap-1.5">
       <i className="ti ti-wifi-off text-sm" aria-hidden="true" /> {text}
     </div>
   );
@@ -65,9 +65,9 @@ export function OfflineBanner({ online, text }) {
 
 export function ConfirmDialog({ message, yes: yesLabel, no: noLabel, onConfirm, onCancel }) {
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-[300] p-4">
-      <div className="bg-white rounded-2xl p-6 max-w-xs w-full text-center shadow-xl">
-        <p className="text-sm font-medium text-gray-800 mb-5">{message}</p>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[300] p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-xs w-full text-center shadow-xl border border-gray-100 dark:border-gray-700">
+        <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-5">{message}</p>
         <div className="flex gap-3">
           <button onClick={onCancel} className="btn-ghost flex-1">{noLabel}</button>
           <button onClick={onConfirm} className="flex-1 py-2.5 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700">{yesLabel}</button>
@@ -79,8 +79,10 @@ export function ConfirmDialog({ message, yes: yesLabel, no: noLabel, onConfirm, 
 
 export function FormSheet({ onClose, children }) {
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-end justify-center z-[200]" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="bg-white rounded-t-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-5 pb-10 safe-bottom">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-end justify-center z-[200]"
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 rounded-t-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-5 pb-10 safe-bottom">
         {children}
       </div>
     </div>
@@ -90,8 +92,11 @@ export function FormSheet({ onClose, children }) {
 export function FormHeader({ title, onClose }) {
   return (
     <div className="flex items-center justify-between mb-4">
-      <span className="text-base font-semibold text-gray-900">{title}</span>
-      <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-xl leading-none p-1" aria-label="Close">
+      <span className="text-base font-semibold text-gray-900 dark:text-white">{title}</span>
+      <button
+        onClick={onClose}
+        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 text-xl leading-none p-1"
+        aria-label="Close">
         <i className="ti ti-x" />
       </button>
     </div>
@@ -101,7 +106,7 @@ export function FormHeader({ title, onClose }) {
 export function Field({ label, children }) {
   return (
     <div className="mb-3">
-      <label className="block text-xs text-gray-500 mb-1">{label}</label>
+      <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</label>
       {children}
     </div>
   );
@@ -113,7 +118,9 @@ export function FieldRow({ children }) {
 
 export function BackBtn({ label, onClick }) {
   return (
-    <button onClick={onClick} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-3">
+    <button
+      onClick={onClick}
+      className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 mb-3">
       <i className="ti ti-arrow-left text-base" aria-hidden="true" /> {label}
     </button>
   );
@@ -121,7 +128,7 @@ export function BackBtn({ label, onClick }) {
 
 export function EmptyState({ text }) {
   return (
-    <div className="text-center py-12 text-gray-400">
+    <div className="text-center py-12 text-gray-400 dark:text-gray-500">
       <i className="ti ti-inbox text-4xl block mb-2" aria-hidden="true" />
       <p className="text-sm">{text}</p>
     </div>
@@ -131,9 +138,9 @@ export function EmptyState({ text }) {
 export function MetricCard({ label, value, sub, color }) {
   return (
     <div className="metric-card">
-      <p className="text-xs text-gray-500 mb-1">{label}</p>
-      <p className={`text-xl font-semibold ${color || "text-gray-900"}`}>{value}</p>
-      {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
+      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{label}</p>
+      <p className={`text-xl font-semibold ${color || "text-gray-900 dark:text-white"}`}>{value}</p>
+      {sub && <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{sub}</p>}
     </div>
   );
 }
@@ -149,8 +156,8 @@ export function ToggleGroup({ options, value, onChange }) {
         <button key={o.key} onClick={() => onChange(o.key)}
           className={`flex-1 py-2 px-3 rounded-lg text-sm border transition-all
             ${value === o.key
-              ? "bg-brand-light text-brand-dark border-brand font-medium"
-              : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"}`}>
+              ? "bg-brand-light dark:bg-brand/20 text-brand-dark dark:text-brand border-brand font-medium"
+              : "bg-white dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600"}`}>
           {o.label}
         </button>
       ))}

@@ -21,10 +21,10 @@ function CustomerSearch({ customers, value, onSelect, lang }) {
 
   if (selected) {
     return (
-      <div className="flex items-center justify-between p-3 border border-brand rounded-lg bg-brand-light">
+      <div className="flex items-center justify-between p-3 border border-brand rounded-lg bg-brand-light dark:bg-brand/20">
         <div>
-          <p className="text-sm font-medium text-brand-dark">{selected.name}</p>
-          <p className="text-xs text-brand mt-0.5">{selected.phone} · {selected.area}</p>
+          <p className="text-sm font-medium text-brand-dark dark:text-brand">{selected.name}</p>
+          <p className="text-xs text-brand dark:text-brand/80 mt-0.5">{selected.phone} · {selected.area}</p>
         </div>
         <button onClick={() => onSelect(null)} className="text-brand hover:text-brand-dark text-lg leading-none p-1">✕</button>
       </div>
@@ -42,14 +42,14 @@ function CustomerSearch({ customers, value, onSelect, lang }) {
         onBlur={() => setTimeout(() => setOpen(false), 180)}
       />
       {open && results.length > 0 && (
-        <div className="absolute top-full start-0 end-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 mt-1 overflow-hidden">
+        <div className="absolute top-full start-0 end-0 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg z-50 mt-1 overflow-hidden">
           {results.map(c => (
             <div key={c.id}
               onMouseDown={() => { onSelect(c.id); setQuery(""); setOpen(false); }}
-              className="flex items-center justify-between px-3 py-2.5 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0">
+              className="flex items-center justify-between px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-600 cursor-pointer border-b border-gray-100 dark:border-gray-600 last:border-0">
               <div>
-                <p className="text-sm font-medium text-gray-900">{c.name}</p>
-                <p className="text-xs text-gray-400">{c.phone} · {c.area}</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-white">{c.name}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-400">{c.phone} · {c.area}</p>
               </div>
               <i className="ti ti-user-check text-brand text-base" aria-hidden="true" />
             </div>
@@ -57,7 +57,7 @@ function CustomerSearch({ customers, value, onSelect, lang }) {
         </div>
       )}
       {open && query.length >= 1 && results.length === 0 && (
-        <div className="absolute top-full start-0 end-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 mt-1 px-3 py-2.5 text-sm text-gray-400">
+        <div className="absolute top-full start-0 end-0 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl shadow-lg z-50 mt-1 px-3 py-2.5 text-sm text-gray-400 dark:text-gray-400">
           <i className="ti ti-user-plus me-1.5" aria-hidden="true" />
           {t.orAddNew}
         </div>
@@ -95,15 +95,13 @@ function OrderForm({ prefill, customers, onSubmit, onClose, lang }) {
     <div>
       <FormHeader title={prefill.id ? t.editOrder : t.newOrder} onClose={onClose} />
 
-      {/* Customer search */}
       <Field label={t.customer}>
         <CustomerSearch customers={customers} value={f.customerId} onSelect={v => toggle("customerId", v)} lang={lang} />
       </Field>
 
-      {/* New customer fields */}
       {!f.customerId && (
-        <div className="bg-gray-50 rounded-xl p-3 mb-3">
-          <p className="text-xs text-gray-500 mb-2">{t.newCustomerSection}</p>
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3 mb-3 border border-gray-100 dark:border-gray-600">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{t.newCustomerSection}</p>
           <Field label={t.name}><input className="form-input" value={f.newName} onChange={set("newName")} placeholder={t.namePh} /></Field>
           <FieldRow>
             <Field label={t.phone}><input className="form-input" type="tel" value={f.phone} onChange={set("phone")} placeholder={t.phonePh} /></Field>
@@ -120,14 +118,12 @@ function OrderForm({ prefill, customers, onSubmit, onClose, lang }) {
         <Field label={t.deliveryFee}><input className="form-input" type="number" value={f.deliveryFee} onChange={set("deliveryFee")} placeholder="0" /></Field>
       </FieldRow>
 
-      {/* Status */}
       <Field label={t.status}>
         <select className="form-input" value={f.status} onChange={set("status")}>
           {ORDER_STATUSES.map(s => <option key={s.key} value={s.key}>{s[lang]}</option>)}
         </select>
       </Field>
 
-      {/* Delivery method toggle */}
       <Field label={t.deliveryMethod}>
         <ToggleGroup
           options={DELIVERY_METHODS.map(d => ({ key: d.key, label: d[lang] }))}
@@ -142,7 +138,6 @@ function OrderForm({ prefill, customers, onSubmit, onClose, lang }) {
         </FieldRow>
       )}
 
-      {/* Payment */}
       <FieldRow>
         <Field label={t.paymentStatus}>
           <ToggleGroup
@@ -164,6 +159,7 @@ function OrderForm({ prefill, customers, onSubmit, onClose, lang }) {
         className={`btn-primary mt-2 ${!canSubmit ? "opacity-40 cursor-not-allowed" : ""}`}
         disabled={!canSubmit}
         onClick={() => onSubmit({ ...f, id: prefill.id })}>
+        <i className={`ti ${prefill.id ? "ti-device-floppy" : "ti-circle-plus"} me-1.5`} aria-hidden="true" />
         {prefill.id ? t.save : t.newOrder}
       </button>
     </div>
@@ -182,14 +178,14 @@ function OrderDetail({ order, customers, onEdit, onDelete, onBack, lang }) {
     : DELIVERY_METHODS.find(d => d.key === "self")?.[lang];
 
   const rows = [
-    [t.customer, cx?.name || "—"],
-    [t.date, order.date],
-    [t.products, order.products],
-    [t.total, fmtEGP(order.total)],
-    [t.deliveryFee, fmtEGP(order.delivery_fee)],
+    [t.customer,       cx?.name || "—"],
+    [t.date,           order.date],
+    [t.products,       order.products],
+    [t.total,          fmtEGP(order.total)],
+    [t.deliveryFee,    fmtEGP(order.delivery_fee)],
     [t.deliveryMethod, delLabel],
-    [t.paymentMethod, methodLabel],
-    [t.notes, order.notes || "—"],
+    [t.paymentMethod,  methodLabel],
+    [t.notes,          order.notes || "—"],
   ];
 
   return (
@@ -197,21 +193,25 @@ function OrderDetail({ order, customers, onEdit, onDelete, onBack, lang }) {
       <BackBtn label={t.back} onClick={onBack} />
       <div className="card">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-gray-500">#{order.id.slice(0, 8)}</span>
+          <span className="text-sm font-medium text-gray-500 dark:text-gray-400">#{order.id.slice(0, 8)}</span>
           <div className="flex gap-1.5">
             <Badge label={statusLabel} cls={STATUS_CLS[order.status]} />
             <Badge label={order.payment_status === "paid" ? t.paid : t.unpaid} cls={PAYMENT_CLS[order.payment_status]} />
           </div>
         </div>
         {rows.map(([l, v]) => (
-          <div key={l} className="flex justify-between py-1.5 border-b border-gray-100 last:border-0 text-sm">
-            <span className="text-gray-500">{l}</span>
-            <span className="font-medium text-gray-900 text-end max-w-[60%]">{v}</span>
+          <div key={l} className="flex justify-between py-1.5 border-b border-gray-100 dark:border-gray-700 last:border-0 text-sm">
+            <span className="text-gray-500 dark:text-gray-400">{l}</span>
+            <span className="font-medium text-gray-900 dark:text-white text-end max-w-[60%]">{v}</span>
           </div>
         ))}
         <div className="flex gap-2 mt-4">
-          <button className="btn-ghost" onClick={onEdit}>{t.edit}</button>
-          <button className="btn-danger" onClick={() => setConfirm(true)}>{t.delete}</button>
+          <button className="btn-ghost flex items-center justify-center gap-1.5" onClick={onEdit}>
+            <i className="ti ti-pencil text-sm" aria-hidden="true" /> {t.edit}
+          </button>
+          <button className="btn-danger flex items-center justify-center gap-1.5" onClick={() => setConfirm(true)}>
+            <i className="ti ti-trash text-sm" aria-hidden="true" /> {t.delete}
+          </button>
         </div>
       </div>
       {confirm && <ConfirmDialog message={t.confirmDelete} yes={t.yes} no={t.no} onConfirm={() => { onDelete(order.id); setConfirm(false); }} onCancel={() => setConfirm(false)} />}
@@ -260,7 +260,7 @@ export default function OrdersScreen({ data, onSave, onDelete, showToast, lang, 
       {!form && !selectedOrder && (
         <>
           <button className="add-btn" onClick={() => setForm({})}>
-            <i className="ti ti-plus text-base" aria-hidden="true" /> {t.newOrder}
+            <i className="ti ti-circle-plus text-base" aria-hidden="true" /> {t.newOrder}
           </button>
           <SectionTitle>{t.allOrders}</SectionTitle>
           {sorted.length === 0 && <EmptyState text={t.noData} />}
@@ -268,14 +268,14 @@ export default function OrdersScreen({ data, onSave, onDelete, showToast, lang, 
             const cx = data.customers.find(c => c.id === o.customer_id);
             const statusLabel = ORDER_STATUSES.find(s => s.key === o.status)?.[lang] || o.status;
             return (
-              <div key={o.id} className="card cursor-pointer hover:bg-gray-50 active:scale-[0.99]" onClick={() => setSelected(o.id)}>
+              <div key={o.id} className="card cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 active:scale-[0.99]" onClick={() => setSelected(o.id)}>
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{cx?.name || "—"}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{o.date} · {o.products}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">{cx?.name || "—"}</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{o.date} · {o.products}</p>
                   </div>
                   <div className="text-end">
-                    <p className="text-sm font-semibold text-gray-900">{fmtEGP(o.total)}</p>
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white">{fmtEGP(o.total)}</p>
                     <div className="flex gap-1 mt-1 justify-end">
                       <Badge label={statusLabel} cls={STATUS_CLS[o.status]} />
                       <Badge label={o.payment_status === "paid" ? t.paid : t.unpaid} cls={PAYMENT_CLS[o.payment_status]} />
@@ -299,13 +299,7 @@ export default function OrdersScreen({ data, onSave, onDelete, showToast, lang, 
 
       {form && (
         <FormSheet onClose={() => setForm(null)}>
-          <OrderForm
-            prefill={form}
-            customers={data.customers}
-            onSubmit={submitOrder}
-            onClose={() => setForm(null)}
-            lang={lang}
-          />
+          <OrderForm prefill={form} customers={data.customers} onSubmit={submitOrder} onClose={() => setForm(null)} lang={lang} />
         </FormSheet>
       )}
     </div>
